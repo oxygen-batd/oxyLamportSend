@@ -1,0 +1,18 @@
+{
+  "name": "xsolana",
+  "version": "1.0.0",
+  "description": "send solana, sol, muitil wallet",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "oxygen.ba.td@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "@solana/web3.js": "^1.91.3",
+    "body-parser": "^1.20.2",
+    "ejs": "^3.1.9",
+    "express": "^4.19.2",
+    "node-cron": "^3.0.3"
+  }
+}
