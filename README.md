@@ -6,8 +6,8 @@
 
 ## Run cmd:
   
- + npm install
- + node app.js
+ + ```npm install```
+ + ```node app.js```
 
 ## Fill account for your
 ## Click [Run script] or automation test with cron: https://crontab.guru/
