@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send SOL by oxygen.ba.td@gmail.com</title>
+    <style>
+        th,
+        td {
+            border-style: solid;
+            border-color: #96D4D4;
+            padding: 8px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th {
+            background-color: #96D4D4;
+        }
+
+        form {
+            width: 100%;
+            padding: 5px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 20%;
+        }
+
+        input[type="submit"],
+        input[type="reset"] {
+            background-color: bisque;
+            margin-top: 5px;
+        }
+        #wallet_container {
+        border: 2px solid #96D4D4;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        padding: 1%;
+    }
+    </style>
+</head>
+
+<body>
+    <h2>Send SOL on the Solana chain (oxygen.ba.td@gmail.com)</h2>
+
+    <h4>Receiver address</h4>
+    <input type="text" id="token_address" name="token_address" value="<%- token_address %>">
+
+    <h4>Quantity of sol to be sent</h4>
+    <input type="text" id="quantity_sol" name="quantity_sol" value="<%- quantity %>">
+    <h4>Accounts</h4>
+
+    <div id="wallet_container">
+        <form action="/add_wallet" method="post" id="addWalletForm">
+            <h4>Name</h4>
+            <input type="text" id="name" name="name">
+            <h4>PrivateKey</h4>
+            <textarea id="private_key" name="private_key" rows="4" cols="60"></textarea>
+            <br>
+            <input type="submit" value="Save wallet">
+        </form>
+    </div>
+
+    <form action="/run" method="get" id="runForm">
+        <input type="submit" value="Run script" id="">
+    </form>
+    <h4>List account on SOL</h4>
+    <table>
+        <tr>
+            <th style="width: 10%;">AccountName</th>
+            <th style="width: 25%;">PrivateKey</th>
+            <th style="width: 10%;">Balance</th>
+            <th style="width: 25%;">TransactionHash</th>
+            <th style="width: 10%;">Status</th>
+        </tr>
+        <% for(let account of accounts) { %>
+            <tr>
+                <td>
+                    <%- account.accountName || "-" %>
+                </td>
+                <td>
+                    <%- account.privateKey %>
+                </td>
+                <td>
+                    <%- account.balance %>
+                </td>
+                <td>
+                    <%- account.transactionHash || "-" %>
+                </td>
+                <td>
+                    <%- account.status || "-" %>
+                </td>
+            </tr>
+            <% } %>
+    </table>
+</body>
+<script>
+    const DOMAIN_URL = 'http://localhost:8000';
+    document.addEventListener('DOMContentLoaded', function () {
+
+        function sendData(url, data, successMessage, errorMessage) {
+            fetch(DOMAIN_URL + url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then();
+            window.location.reload();
+        }
+
+        const quantityInput = document.querySelector('#quantity_sol');
+        if (quantityInput) {
+            quantityInput.addEventListener('keydown', function (event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    const quantity = quantityInput.value;
+                    if (contract) {
+                        const data = {
+                            quantity: quantity
+                        };
+                        sendData('/add_quantity', data, 'Add quantity successful', 'Add quantity error');
+                    }
+                }
+            });
+        }
+
+        const contract = document.querySelector('#token_address');
+        if (contract) {
+            contract.addEventListener('keydown', function (event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    const token_address = contract.value;
+                    if (contract) {
+                        const data = {
+                            token_address: token_address
+                        };
+                        sendData('/add_token', data, 'Add token successful', 'Add token error');
+                    }
+                }
+            });
+        }
+
+        const addWalletForm = document.querySelector('#addWalletForm');
+        if (addWalletForm) {
+            addWalletForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                const name = document.querySelector('#name').value;
+                const privateKey = document.querySelector('#private_key').value;
+                if (privateKey) {
+                    const data = {
+                        name: name || "",
+                        private_key: privateKey
+                    };
+                    sendData('/add_wallet', data, 'Add wallet successful', 'Add wallet error');
+                } else {
+                    alert("input private key ...");
+                }
+            });
+        }
+    });
+</script>
+
+</html>
